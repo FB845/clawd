@@ -171,7 +171,7 @@ final class UsageView: NSView {
         NSRect(x: pad, y: y + 2, width: w, height: 1).fill()
         let age = Date().timeIntervalSince(s.updated)
         let when = s.updated == .distantPast ? "reading logs…" : (age < 45 ? "updated just now" : "updated \(Int(age / 60)) min ago")
-        text("From Claude Code logs on this Mac · \(when)", pad, y + 9, smallFont, tertiary)
+        text("Estimated from Claude Code logs · \(when)", pad, y + 9, smallFont, tertiary)
     }
 
     private var chartRect: NSRect {

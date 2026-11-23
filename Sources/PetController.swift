@@ -174,6 +174,7 @@ final class PetController: NSObject, NSMenuDelegate {
         sensorAccum["weather"] = 0   // startWeather() does the first fetch; the timer takes over after 15 min
         enter(.idle, duration: 2)
         startWeather()
+        offerHooksOnce()
     }
 
     func shutdown() {
@@ -1352,6 +1353,8 @@ final class PetController: NSObject, NSMenuDelegate {
         add("Set location…", #selector(setLocationAction(_:)))
         add("Refresh weather", #selector(refreshWeatherAction(_:)))
         menu.addItem(.separator())
+        if isPrimary { add("Connect to Claude Code…", #selector(hooksAction(_:)), tag: 8) }
+        add("About Clawd", #selector(aboutAction(_:)))
         add(isPrimary ? "Quit Clawd" : "Send this friend home", #selector(quitAction(_:)), key: "q")
         return menu
     }
@@ -1367,6 +1370,11 @@ final class PetController: NSObject, NSMenuDelegate {
         }
         menu.item(withTag: 6)?.title = "Mood: \(moodLabel) (\(Int(mood)))"
         menu.item(withTag: 7)?.title = snack == nil ? "Drop a snack" : "Take the snack away"
+        if let item = menu.item(withTag: 8) {
+            let st = HookInstaller.status()
+            item.title = st == .installed ? "Connected to Claude Code" : st == .needsUpdate ? "Reconnect to Claude Code…" : "Connect to Claude Code…"
+            item.state = st == .installed ? .on : .off
+        }
     }
 
     func showMenu(_ e: NSEvent) {
@@ -1481,5 +1489,74 @@ final class PetController: NSObject, NSMenuDelegate {
 
     @objc func quitAction(_ sender: Any?) {
         NSApp.terminate(nil)
+    }
+
+    // MARK: - Claude Code hooks and About
+
+    /// Connecting edits ~/.claude/settings.json, so it is always the user's explicit choice.
+    @objc func hooksAction(_ sender: Any?) {
+        let st = HookInstaller.status()
+        let alert = NSAlert()
+        if st == .installed {
+            alert.messageText = "Disconnect Clawd from Claude Code?"
+            alert.informativeText = "Clawd's hooks will be removed from \(HookInstaller.settingsPath). "
+                + "Your other settings stay as they are, and a copy of the old file is kept as settings.json.clawd-backup."
+            alert.addButton(withTitle: "Disconnect")
+        } else {
+            alert.messageText = st == .needsUpdate ? "Reconnect Clawd to Claude Code?" : "Connect Clawd to Claude Code?"
+            alert.informativeText = """
+                Clawd will add hooks to \(HookInstaller.settingsPath) so Claude Code can show what it's doing \
+                and ask for permissions on Clawd's Allow / Deny card.
+
+                Your other settings stay as they are, and a copy of the old file is kept as settings.json.clawd-backup. \
+                New Claude Code sessions pick up the change.
+                """ + (st == .needsUpdate ? "\n\nClawd's hooks point at an older copy of the app; this points them here." : "")
+            alert.addButton(withTitle: st == .needsUpdate ? "Reconnect" : "Connect")
+        }
+        alert.addButton(withTitle: "Cancel")
+        NSApp.activate(ignoringOtherApps: true)
+        guard alert.runModal() == .alertFirstButtonReturn else { return }
+        do {
+            if st == .installed {
+                try HookInstaller.remove()
+                say("Bye, Claude Code!", seconds: 3)
+            } else {
+                try HookInstaller.install()
+                UserDefaults.standard.set(true, forKey: "offeredHooks")
+                say("Connected to Claude Code!", seconds: 3)
+            }
+        } catch {
+            let fail = NSAlert()
+            fail.messageText = "Clawd couldn't change the Claude Code settings"
+            fail.informativeText = error.localizedDescription
+            fail.runModal()
+        }
+    }
+
+    /// On a fresh install, Clawd mentions the Claude Code connection once instead of changing anything itself.
+    private func offerHooksOnce() {
+        let d = UserDefaults.standard
+        guard isPrimary, !d.bool(forKey: "offeredHooks"), HookInstaller.claudeDirExists,
+              HookInstaller.status() == .notInstalled else { return }
+        d.set(true, forKey: "offeredHooks")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 6) { [weak self] in
+            self?.say("Right-click me to connect to Claude Code", seconds: 7)
+        }
+    }
+
+    @objc func aboutAction(_ sender: Any?) {
+        let text = """
+            An unofficial, open-source fan project. Not made by, affiliated with, or endorsed by Anthropic. \
+            Claude and Claude Code are trademarks of Anthropic.
+
+            Token counts are estimates read from Claude Code's logs on this Mac. Nothing leaves your computer \
+            except the weather lookup (Open-Meteo, plus ipapi.co to guess your city unless you set one).
+            """
+        let credits = NSAttributedString(string: text, attributes: [
+            .font: NSFont.systemFont(ofSize: NSFont.smallSystemFontSize),
+            .foregroundColor: NSColor.secondaryLabelColor,
+        ])
+        NSApp.activate(ignoringOtherApps: true)
+        NSApp.orderFrontStandardAboutPanel(options: [.credits: credits])
     }
 }

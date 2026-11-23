@@ -9,14 +9,15 @@ struct Peer {
     let state: String
 }
 
-/// Instances share their positions through tiny JSON files in /tmp so two Clawds can meet.
+/// Instances share their positions through tiny JSON files in the private runtime folder so two Clawds can meet.
 enum PeerRegistry {
-    static let dir = "/tmp/clawd-peers"
+    static var dir: String { ClawdPaths.peers }
     static let myPID = getpid()
     private static var myFile: String { "\(dir)/\(myPID).json" }
 
     static func publish(x: CGFloat, y: CGFloat, facing: Int, state: String) {
         let fm = FileManager.default
+        guard ClawdPaths.ensureRuntimeDir() else { return }
         try? fm.createDirectory(atPath: dir, withIntermediateDirectories: true)
         let obj: [String: Any] = ["pid": Int(myPID), "x": Double(x), "y": Double(y), "facing": facing,
                                   "state": state, "t": Date().timeIntervalSince1970]

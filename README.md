@@ -1,7 +1,43 @@
-# Clawd — a Claude desktop pet for macOS
+# Clawd — an unofficial Claude Code desktop pet for macOS
 
 A tiny native macOS app: a pixel-art Clawd that lives on your screen, floating above your
-other windows, and doubles as a live status buddy for Claude Code.
+other windows, and doubles as a live status buddy for Claude Code. It shows what Claude Code is
+doing, lets you approve permission requests with a click, and puts your token usage, by project,
+in the menu bar.
+
+> **Unofficial fan project.** Clawd is not made by, affiliated with, or endorsed by Anthropic.
+> Claude, Claude Code, and the Clawd character are Anthropic's; this is just a fan-made toy, free and
+> open source under the MIT License.
+
+![Clawd in light and dark mode](docs/preview.png)
+
+## Install
+
+**Download:** grab `Clawd-<version>.zip` from the Releases page, unzip it, and drag `Clawd.app` to
+Applications. Needs macOS 13 or later, on Apple Silicon or Intel.
+
+**Or build it yourself:**
+
+```bash
+./build.sh
+open build/Clawd.app
+```
+
+Needs only the Xcode Command Line Tools (`xcode-select --install`): no Xcode project, no dependencies.
+The app has no Dock icon; a small Clawd appears in the menu bar with the controls.
+
+Then right-click Clawd (or use the menu bar icon) and choose **Connect to Claude Code…**. That adds
+Clawd's hooks to `~/.claude/settings.json`, keeping your other settings and saving a backup next to it.
+Choose it again to disconnect. New Claude Code sessions pick up the change.
+
+## Privacy
+
+- Everything stays on your Mac except the weather: Clawd asks Open-Meteo for the forecast, and ipapi.co
+  to guess your city from your network address unless you set a location yourself (**Set location…**).
+- Token usage is read from Claude Code's own log files on this Mac. Nothing is uploaded.
+- Copying something makes Clawd hold up a clipboard, but it never reads what you copied.
+- macOS asks once whether Clawd may check Music and Spotify, so it can dance to them. Saying no only
+  turns the dancing off.
 
 ## Look and feel
 
@@ -15,17 +51,7 @@ other windows, and doubles as a live status buddy for Claude Code.
   sparkles, cookie crumbs, sweat drops, rain that splashes on its umbrella, and drifting snow.
 - Claude Code status shows in a pixel thought bubble with animated icons; messages appear in a
   pixel speech bubble that types itself out.
-- `build/preview.png` and `build/preview-dark.png` show every look on light and dark backgrounds.
-
-## Build and run
-
-```bash
-./build.sh
-open build/Clawd.app
-```
-
-Needs only the Xcode Command Line Tools (`swiftc`), no Xcode project, no dependencies.
-The app has no Dock icon; a small Clawd appears in the menu bar with the controls.
+- `./build.sh` writes `build/preview.png` and `build/preview-dark.png`, which show every look on light and dark backgrounds.
 
 ## What it does on its own
 
@@ -52,7 +78,7 @@ top of the menu:
   every session by name with its subagent share. Clicking a project in Top Projects opens that project.
 - **Top projects** and the **model mix** for the last 7 days.
 
-Numbers come from Claude Code's session logs in `~/.claude/projects`, which both the desktop app and the
+Numbers are estimates from Claude Code's session logs in `~/.claude/projects`, which both the desktop app and the
 CLI write, including subagents. Each response appears in the logs more than once, so it is counted once
 by its response id. Notes:
 
@@ -109,8 +135,9 @@ by its response id. Notes:
 
 ## Claude Code companion
 
-`bin/install-hooks.py` adds hooks to `~/.claude/settings.json` (already done on this machine;
-run it with `--remove` to take them out). Claude Code then tells Clawd what it is doing:
+Once connected (**Connect to Claude Code…** in the menu, or `bin/clawd connect`), Claude Code runs
+`Clawd.app/Contents/MacOS/Clawd hook` on each event and Clawd shows what it is doing. If you move the app,
+the menu item changes to **Reconnect to Claude Code…**.
 
 | Claude Code            | Clawd                                   |
 |------------------------|-----------------------------------------|
@@ -139,7 +166,8 @@ command, file, or URL, the project, and how many requests are waiting. Click **A
 - Claude's questions (AskUserQuestion) and plan reviews (ExitPlanMode) never get Allow or Deny buttons,
   because they need your real answer. Clawd just tells you one is waiting and leaves it to Claude Code.
 
-You can talk to it yourself from any script:
+You can talk to it yourself from any script. `bin/clawd` forwards to the app binary, so with the app in
+Applications you can also call `/Applications/Clawd.app/Contents/MacOS/Clawd` directly:
 
 ```bash
 bin/clawd notify "Build finished"     # speech bubble + hop
@@ -147,10 +175,12 @@ bin/clawd say "hi"
 bin/clawd thinking | done | attention | clear
 bin/clawd tool bash                   # bash | edit | read | web | agent
 bin/clawd pet | sleep | wake
+bin/clawd connect | disconnect        # add or remove the Claude Code hooks
 ```
 
-Messages go over the Unix socket `/tmp/clawd.sock`; received events are logged to
-`~/Library/Logs/Clawd.log`. If Clawd isn't running the client silently does nothing.
+Messages go over a Unix socket in `~/Library/Application Support/Clawd`, a folder only your account can
+open; received events are logged to `~/Library/Logs/Clawd.log`. If Clawd isn't running the client silently
+does nothing, so a hook can never hold up Claude Code.
 
 ## Layout
 
@@ -161,12 +191,25 @@ Messages go over the Unix socket `/tmp/clawd.sock`; received events are logged t
   follows the music player.
 - `Sources/Weather.swift` is the season calendar plus the Open-Meteo and location lookups.
 - `Sources/Toy.swift` is the ball and the snack: tiny physics windows you can drag and throw.
-- `Sources/Peers.swift` lets running Clawds share positions through `/tmp/clawd-peers`.
+- `Sources/Peers.swift` lets running Clawds share positions through small files in the same private folder.
 - `Sources/UsageStore.swift` reads token usage from the session logs; `Sources/UsageView.swift` is the menu panel.
 - `Sources/ApprovalPanel.swift` is the Allow / Deny card for Claude Code permission requests.
-- `Sources/ControlSocket.swift` is the Unix-socket server; `bin/clawd` is the client.
+- `Sources/ControlSocket.swift` is the Unix-socket server; `Sources/Paths.swift` says where it lives.
+- `Sources/CLI.swift` is the command-line client and the Claude Code hook; `Sources/HookInstaller.swift`
+  connects and disconnects the hooks.
 - `Sources/PetView.swift` renders Clawd. The sprite, shadow, and thought bubble are Core Animation layers
   moved by springs on the GPU; particles and speech are painted into two overlay layers only while they animate.
   The window spans the screen's width and ignores the mouse except over Clawd, so it never blocks clicks.
 - `Sources/Particles.swift` holds the particle glyphs and the spring; `Sources/Icons.swift` the bubble icons and toys.
 - `Sources/IconRenderer.swift` renders the menu-bar icon, the .icns, and `build/preview.png`.
+
+## Releasing
+
+`./build.sh --release` builds a universal app and zips it into `dist/`. Without signing, other Macs
+will refuse to open it. To sign and notarize, set `CLAWD_SIGN_IDENTITY` to your "Developer ID Application"
+identity and `CLAWD_NOTARY_PROFILE` to a profile saved with `xcrun notarytool store-credentials`.
+
+## License
+
+MIT, see [LICENSE](LICENSE). The Clawd character, Claude, and Claude Code belong to Anthropic; this
+project is unofficial and not endorsed by them.

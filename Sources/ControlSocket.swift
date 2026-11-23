@@ -51,9 +51,9 @@ final class Responder {
 }
 
 /// Tiny Unix-domain-socket server. Clients connect, write one JSON object per line, and hang up.
-/// The `bin/clawd` script and Claude Code hooks talk to Clawd through this.
+/// The `Clawd hook` command (run by Claude Code) and `bin/clawd` talk to Clawd through this.
 final class ControlSocket {
-    static let path = "/tmp/clawd.sock"
+    static var path: String { ClawdPaths.socket }
 
     private var fd: Int32 = -1
     private var source: DispatchSourceRead?
@@ -65,7 +65,7 @@ final class ControlSocket {
         self.handler = handler
     }
 
-    private static func address(for path: String) -> sockaddr_un {
+    static func address(for path: String) -> sockaddr_un {
         var addr = sockaddr_un()
         addr.sun_family = sa_family_t(AF_UNIX)
         let bytes = path.utf8CString
@@ -92,6 +92,7 @@ final class ControlSocket {
 
     @discardableResult
     func start() -> Bool {
+        guard ClawdPaths.ensureRuntimeDir() else { return false }
         unlink(ControlSocket.path)
         fd = socket(AF_UNIX, SOCK_STREAM, 0)
         guard fd >= 0 else { return false }

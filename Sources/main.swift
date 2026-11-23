@@ -1,7 +1,13 @@
 import AppKit
 
-// Headless helpers used by build.sh.
 let args = CommandLine.arguments
+
+// `Clawd hook`, `Clawd notify "hi"`, …: the command-line client. Never starts the UI.
+if args.count > 1, CLI.commands.contains(args[1]) {
+    CLI.run(Array(args.dropFirst()))
+}
+
+// Headless helpers used by build.sh.
 if let i = args.firstIndex(of: "--render-icon"), i + 1 < args.count {
     IconRenderer.writeIconset(to: args[i + 1])
     exit(0)

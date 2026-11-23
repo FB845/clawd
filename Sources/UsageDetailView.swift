@@ -146,7 +146,7 @@ struct UsageDetailView: View {
 
     private var footer: some View {
         HStack {
-            Text("From Claude Code logs on this Mac · subagent work is included in its project")
+            Text("Estimated from Claude Code logs on this Mac · subagent work is included in its project")
                 .font(.system(size: 10.5)).foregroundStyle(.tertiary)
             Spacer()
             Button("Refresh") { model.load() }.controlSize(.small)

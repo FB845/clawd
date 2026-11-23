@@ -314,7 +314,7 @@ enum IconRenderer {
         add("festive") { $0.hat = .santa; $0.eyeStyle = .happy; $0.mouth = .smile }
         add("eating") { $0.eyeStyle = .happy; $0.mouth = .chomp }
         add("eye poke") { $0.eyeOpen = 1 }
-        add("weather news", speech: "68°F and partly cloudy in Los Angeles") { _ in }
+        add("weather news", speech: "68°F and partly cloudy today") { _ in }
         add("chomp") { $0.eyeStyle = .happy; $0.mouth = .chomp; $0.facing = -1 }
 
         let scale: CGFloat = 2
