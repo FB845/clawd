@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clawd: a tiny desktop pet for Claude Code (unofficial)</title>
+<meta name="description" content="A free, open-source pixel-art desktop pet for macOS that keeps you company while Claude Code works. Unofficial fan project.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#eef0f5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1b1d23" media="(prefers-color-scheme: dark)">
+<meta property="og:title" content="Clawd: a tiny desktop pet for Claude Code">
+<meta property="og:description" content="A free, open-source pixel-art pet for macOS. Unofficial fan project.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 9' shape-rendering='crispEdges'%3E%3Cpath fill='%23D97757' d='M1 0h8v1H1zM1 1h8v1H1zM0 2h10v1H0zM0 3h10v1H0zM1 4h8v1H1zM1 5h8v1H1zM1 6h1v2H1zM3 6h1v2H3zM6 6h1v2H6zM8 6h1v2H8z'/%3E%3Cpath fill='%231F1A17' d='M2 1h1v1H2zM7 1h1v1H7z'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="top">
+  <div class="wrap top-row">
+    <a class="brand" href="#">
+      <svg class="brand-mark" viewBox="0 0 12 8" aria-hidden="true" shape-rendering="crispEdges"><path d="M1 0h8v3H1zM0 1h1v1H0zM9 1h1v1H9zM1 3h1v1H1zM3 3h1v1H3zM6 3h1v1H6zM8 3h1v1H8z" fill="currentColor"/></svg>
+      Clawd
+    </a>
+    <nav class="top-nav" aria-label="Sections">
+      <a href="#companion">Companion</a>
+      <a href="#usage">Usage</a>
+      <a href="#life">Life</a>
+      <a href="#install">Install</a>
+      <a class="gh" href="https://github.com/FB845/clawd">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- 1. Hero -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <h1>A tiny desktop pet that keeps you company while Claude&nbsp;Code works.</h1>
+      <p class="lede">Clawd is a pixel-art friend who lives on your screen, wanders along the bottom, sits on your windows, and shows you what Claude Code is up to, one little thought bubble at a time.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="https://github.com/FB845/clawd/releases/download/v0.1.0/Clawd-0.1.0.zip">
+          <svg viewBox="0 0 16 16" aria-hidden="true" shape-rendering="crispEdges"><path d="M7 1h2v8h2v-2h2v2h-1v1h-1v1h-1v1H8v-1H7V11H6v-1H5V9H4V7h2v2h1zM2 13h12v2H2z" fill="currentColor"/></svg>
+          Download for Mac
+        </a>
+        <a class="btn btn-ghost" href="https://github.com/FB845/clawd">View on GitHub</a>
+      </div>
+      <p class="fine">Free and open source · macOS 13 or later · v0.1.0, signed and notarized · <a href="https://github.com/FB845/clawd/releases">all releases</a></p>
+    </div>
+
+    <div class="scene" aria-label="Clawd walking along the top of a window on a Mac desktop">
+      <div class="menubar" aria-hidden="true">
+        <span class="mb-left"><i class="mb-apple"></i><b>Finder</b><span>File</span><span>Edit</span><span>View</span></span>
+        <span class="mb-right">
+          <svg class="mb-clawd" viewBox="0 0 24 16" shape-rendering="crispEdges"><path d="M4 0h16v12H4zM0 4h4v4H0zM20 4h4v4h-4zM4 12h2v4H4zM8 12h2v4H8zM14 12h2v4h-2zM18 12h2v4h-2z" fill="currentColor"/><path d="M6 2h2v2H6zM16 2h2v2h-2z" fill="var(--mb-bg)"/></svg>
+          <span class="mb-count">48.2k</span>
+          <span class="mb-time">9:41</span>
+        </span>
+      </div>
+      <div class="win" aria-hidden="true">
+        <div class="win-bar"><i></i><i></i><i></i><span>~/code/my-website</span></div>
+        <div class="win-body">
+          <p><span class="p">&gt;</span> make the header sticky</p>
+          <p class="dim">● Read src/header.css</p>
+          <p class="dim">● Edit src/header.css</p>
+          <p class="dim">● Bash npm test</p>
+          <p class="ok">✓ Done. The header now stays put.</p>
+        </div>
+      </div>
+      <button class="hero-pet pet-img" id="heroPet" type="button" aria-label="Pet Clawd">
+        <img src="img/idle.png" alt="" width="312" height="324">
+      </button>
+      <p class="scene-hint" aria-hidden="true">psst: click Clawd</p>
+    </div>
+  </div>
+</section>
+
+<!-- 2. Companion -->
+<section class="band" id="companion">
+  <div class="wrap two-col">
+    <div>
+      <p class="kicker">Claude Code companion</p>
+      <h2>Glance over and see what Claude is doing.</h2>
+      <p>Connect Clawd once and every Claude Code session reports to it. A pixel thought bubble shows the current step, with a little animated icon for each kind of work.</p>
+      <ul class="status-list" id="statusList">
+        <li><button type="button" data-pose="thinking"><span class="sl-icon"><img src="img/spin5.png" alt=""></span><span><b>You send a prompt</b> thinks, with Claude Code's own spinner</span></button></li>
+        <li><button type="button" data-pose="bash"><span class="sl-dot"></span><span><b>Runs a shell command</b> swings a hammer</span></button></li>
+        <li><button type="button" data-pose="edit"><span class="sl-dot"></span><span><b>Edits or writes a file</b> holds a pencil</span></button></li>
+        <li><button type="button" data-pose="read"><span class="sl-dot"></span><span><b>Reads or searches</b> holds a magnifying glass</span></button></li>
+        <li><button type="button" data-pose="web"><span class="sl-dot"></span><span><b>Fetches the web</b> holds a globe</span></button></li>
+        <li><button type="button" data-pose="agent"><span class="sl-dot"></span><span><b>Spawns a subagent</b> holds a tiny Clawd</span></button></li>
+        <li><button type="button" data-pose="done"><span class="sl-dot"></span><span><b>Finishes a turn</b> happy hop and a green check</span></button></li>
+      </ul>
+    </div>
+    <div class="stage" aria-live="off">
+      <div class="stage-floor"></div>
+      <div class="pet-img stage-pet"><img id="statusPet" src="img/thinking0.png" alt="Clawd thinking, with a spinner in its thought bubble" width="312" height="324"></div>
+      <p class="stage-caption" id="statusCaption">Thinking…</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3. Approvals -->
+<section class="band band-alt" id="approve">
+  <div class="wrap two-col flip">
+    <div class="approval-demo">
+      <div class="card px" id="approvalCard" role="group" aria-label="Sample permission card">
+        <p class="card-title"><img src="img/spin5.png" alt="" class="spark"> Allow Bash?</p>
+        <pre class="card-detail">npm run build &amp;&amp; npm test</pre>
+        <p class="card-foot">my-website · 1 of 2 waiting</p>
+        <div class="card-buttons">
+          <button type="button" class="pxbtn deny" data-answer="deny">Deny</button>
+          <button type="button" class="pxbtn allow" data-answer="allow">Allow</button>
+        </div>
+        <span class="card-tail" aria-hidden="true"></span>
+      </div>
+      <div class="pet-img approval-pet"><img id="approvalPet" src="img/alert.png" alt="Clawd hopping up with a permission request" width="312" height="324"></div>
+      <p class="demo-note">A demo card. Try the buttons; nothing here talks to anything.</p>
+    </div>
+    <div>
+      <p class="kicker">Click to approve</p>
+      <h2>Allow or Deny, right from your desktop.</h2>
+      <p>When Claude Code asks for permission, Clawd hops up with a card: the tool, the exact command, file or URL, the project, and how many requests are waiting. Claude Code's own prompt still appears too; whichever you answer first wins.</p>
+      <ul class="rules">
+        <li><b>Only a real click approves.</b> No socket message, script or <code>clawd</code> command can say yes on your behalf.</li>
+        <li><b>No accidental clicks.</b> The buttons ignore clicks for half a second after the card appears.</li>
+        <li><b>Your deny rules still win.</b> An Allow from Clawd can't override a settings rule that blocks a tool.</li>
+        <li><b>Questions go back to Claude Code.</b> Claude's questions and plan reviews never get buttons, because they need your real answer. Clawd just lets you know one is waiting.</li>
+        <li><b>Ignore it and nothing breaks.</b> After two minutes, or if Clawd isn't running, Claude Code simply asks the usual way.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 4. Usage -->
+<section class="band" id="usage">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="kicker">Token usage in the menu bar</p>
+      <h2>Today's tokens, one glance away.</h2>
+      <p>Clawd sits in your menu bar with today's token count beside it. Click for a panel with the last 14 days, or open the breakdown by project. It reads Claude Code's own logs on your Mac; nothing is uploaded.</p>
+    </div>
+
+    <div class="usage-grid">
+      <figure class="mock menu-mock">
+        <div class="mock-menubar" aria-hidden="true">
+          <svg class="mb-clawd" viewBox="0 0 24 16" shape-rendering="crispEdges"><path d="M4 0h16v12H4zM0 4h4v4H0zM20 4h4v4h-4zM4 12h2v4H4zM8 12h2v4H8zM14 12h2v4h-2zM18 12h2v4h-2z" fill="currentColor"/><path d="M6 2h2v2H6zM16 2h2v2h-2z" fill="var(--mock-bar)"/></svg>
+          <span>48.2k</span>
+        </div>
+        <div class="panel">
+          <p class="panel-label">TODAY</p>
+          <p class="panel-big">48,214 <small>tokens</small></p>
+          <p class="panel-sub">+ 1.9M cache reads</p>
+          <div class="cells">
+            <div><span>Input</span><b>6.1k</b></div>
+            <div><span>Output</span><b>31.4k</b></div>
+            <div><span>Cache write</span><b>10.7k</b></div>
+            <div><span>Cache read</span><b class="dim">1.9M</b></div>
+          </div>
+          <p class="panel-label">LAST 14 DAYS</p>
+          <div class="chart" id="chart" role="img" aria-label="Bar chart of made-up daily token totals for the last 14 days"></div>
+          <p class="chart-tip" id="chartTip">Hover a bar</p>
+          <div class="totals">
+            <div><span>This week</span><b>214k</b></div>
+            <div><span>30 days</span><b>1.02M</b></div>
+          </div>
+          <hr>
+          <p class="menu-item">Usage by project…</p>
+          <p class="menu-item">Show today's tokens in menu bar <span class="check">✓</span></p>
+        </div>
+        <figcaption>The menu-bar panel. Sample numbers.</figcaption>
+      </figure>
+
+      <figure class="mock detail-mock">
+        <div class="detail-win">
+          <div class="win-bar"><i></i><i></i><i></i><span>Clawd · Token usage</span></div>
+          <div class="detail-body">
+            <div class="detail-head">
+              <h3>Tokens by project</h3>
+              <div class="seg" role="tablist" aria-label="Period">
+                <button type="button" role="tab" data-period="today">Today</button>
+                <button type="button" role="tab" data-period="week" aria-selected="true">7 days</button>
+                <button type="button" role="tab" data-period="month">30 days</button>
+              </div>
+            </div>
+            <p class="detail-total"><b id="detailTotal">214k</b> tokens across <span id="detailCount">5</span> projects</p>
+            <div class="share" id="shareBar" aria-hidden="true"></div>
+            <ul class="projects" id="projects"></ul>
+            <p class="detail-foot">Estimated from Claude Code logs on this Mac · subagent work is included in its project</p>
+          </div>
+        </div>
+        <figcaption>The by-project window, with per-project input, output and cache, models used, and every session. Made-up projects.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- 5. Life on your Mac -->
+<section class="band band-alt" id="life">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="kicker">Life on your Mac</p>
+      <h2>It has a little life of its own.</h2>
+      <p>Even when Claude Code is quiet, Clawd keeps busy. Its motion is spring-driven: it squashes when it lands, leans into its walk, swings when you carry it and breathes when idle.</p>
+    </div>
+    <div class="tiles">
+      <article class="tile">
+        <div class="tile-art"><div class="pet-img walker" data-walk><img src="img/walk1.png" alt="Clawd walking" width="312" height="324"></div></div>
+        <h3>Wanders about</h3>
+        <p>Strolls along the bottom of the screen, pauses, blinks and watches your cursor. Drag it anywhere, or flick it to throw it.</p>
+      </article>
+      <article class="tile">
+        <div class="tile-art"><div class="mini-win"></div><div class="pet-img on-win"><img src="img/happy.png" alt="Clawd sitting on a window" width="312" height="324"></div></div>
+        <h3>Sits on your windows</h3>
+        <p>Drop it on a window's top edge, or it jumps up by itself. It rides along when you move the window and hops down when it closes.</p>
+      </article>
+      <article class="tile">
+        <div class="tile-art toys">
+          <div class="balls">
+            <img src="img/ball-classic.png" alt="classic ball"><img src="img/ball-baseball.png" alt="baseball"><img src="img/ball-basketball.png" alt="basketball"><img src="img/ball-soccer.png" alt="soccer ball"><img src="img/ball-tennis.png" alt="tennis ball">
+          </div>
+          <img class="cookie" id="cookie" src="img/cookie0.png" alt="a cookie">
+        </div>
+        <h3>Ball and snacks</h3>
+        <p>Throw a ball (five kinds, each bounces differently) and Clawd kicks it back toward your cursor. Drop a cookie and it waddles over to eat it in three bites.</p>
+      </article>
+      <article class="tile">
+        <div class="tile-art friends"><div class="pet-img"><img src="img/wave.png" alt="Clawd waving" width="312" height="324"></div><div class="pet-img mirror"><img src="img/wave.png" alt="a friend Clawd waving back" width="312" height="324"></div></div>
+        <h3>Call a friend</h3>
+        <p>Launch a second Clawd. The two notice each other and wave, and bump into each other when they cross paths.</p>
+      </article>
+      <article class="tile">
+        <div class="tile-art pair"><div class="pet-img"><img src="img/pet.png" alt="Clawd happy, with hearts" width="312" height="324"></div><div class="pet-img"><img src="img/sulky.png" alt="Clawd sulking" width="312" height="324"></div></div>
+        <h3>Has a mood</h3>
+        <p>Petting, snacks and friends cheer it up; pokes and rough throws don't. A happy Clawd floats hearts; a sulky one looks away and sighs until you win it back.</p>
+      </article>
+      <article class="tile">
+        <div class="tile-art pair"><div class="pet-img"><img src="img/dizzy.png" alt="Clawd dizzy" width="312" height="324"></div><div class="pet-img"><img src="img/eyepoke.png" alt="Clawd squinting" width="312" height="324"></div></div>
+        <h3>Pokes</h3>
+        <p>Click its eyes and it squints. Shake it while dragging and it lands dizzy. Hold it up too long and it flails.</p>
+      </article>
+      <article class="tile">
+        <div class="tile-art"><div class="pet-img bop"><img src="img/dance.png" alt="Clawd dancing with music notes" width="312" height="324"></div></div>
+        <h3>Dances to your music</h3>
+        <p>When Music or Spotify is playing, Clawd dances along, and keeps going through the gap between tracks.</p>
+      </article>
+      <article class="tile">
+        <div class="tile-art cycle" data-cycle="typing,sleep,lowbatt,clipboard"><div class="pet-img"><img src="img/typing.png" alt="Clawd reacting to your Mac" width="312" height="324"></div></div>
+        <h3>Notices your Mac</h3>
+        <p>Looks down at the keys while you type fast, dozes after 10 idle minutes, droops on low battery, and holds up a clipboard when you copy (without ever reading it).</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- 6. Time, seasons, weather -->
+<section class="band" id="weather">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="kicker">Time, seasons and weather</p>
+      <h2>Dressed for the day.</h2>
+      <p>Clawd checks the clock, the calendar and the local forecast, and changes outfit to match. Seasons flip for the southern hemisphere, and it announces the weather in a speech bubble when things change.</p>
+    </div>
+    <ul class="outfits">
+      <li><div class="pet-img"><img src="img/morning.png" alt="" width="312" height="324"></div><b>Coffee</b><span>mornings, 6 to 10am</span></li>
+      <li><div class="pet-img"><img src="img/night.png" alt="" width="312" height="324"></div><b>Nightcap</b><span>11pm to 6am</span></li>
+      <li><div class="pet-img"><img src="img/festive.png" alt="" width="312" height="324"></div><b>Santa hat</b><span>December 20 to 26</span></li>
+      <li><div class="pet-img"><img src="img/cold.png" alt="" width="312" height="324"></div><b>Scarf</b><span>8°C / 46°F or colder</span></li>
+      <li><div class="pet-img"><img src="img/rain.png" alt="" width="312" height="324"></div><b>Umbrella</b><span>when it rains</span></li>
+      <li><div class="pet-img"><img src="img/snow.png" alt="" width="312" height="324"></div><b>Beanie</b><span>snow, or below −3°C</span></li>
+      <li><div class="pet-img"><img src="img/summer.png" alt="" width="312" height="324"></div><b>Sunglasses</b><span>clear, warm summer days</span></li>
+      <li><div class="pet-img"><img src="img/hot.png" alt="" width="312" height="324"></div><b>Hot day</b><span>sweats from 28°C / 82°F</span></li>
+      <li><div class="pet-img"><img src="img/spring.png" alt="" width="312" height="324"></div><b>Flower</b><span>spring</span></li>
+      <li><div class="pet-img"><img src="img/autumn.png" alt="" width="312" height="324"></div><b>Leaf</b><span>autumn</span></li>
+    </ul>
+    <p class="note">Plus shivering when it's freezing, squinting in fog and startled jumps in thunderstorms. Temperatures show in °F or °C to match your Mac.</p>
+  </div>
+</section>
+
+<!-- 7. Install + privacy -->
+<section class="band band-alt" id="install">
+  <div class="wrap two-col align-top">
+    <div>
+      <p class="kicker">Install</p>
+      <h2>Up and running in a minute.</h2>
+      <ol class="steps">
+        <li><b>Download</b> <a href="https://github.com/FB845/clawd/releases/download/v0.1.0/Clawd-0.1.0.zip">Clawd-0.1.0.zip</a> and unzip it.</li>
+        <li><b>Drag</b> Clawd.app to your Applications folder and open it. A small Clawd appears in the menu bar (there's no Dock icon).</li>
+        <li><b>Right-click Clawd</b> and choose <b>Connect to Claude Code…</b> New Claude Code sessions pick it up. Choose it again to disconnect.</li>
+      </ol>
+      <p class="small">Connecting adds Clawd's hooks to your Claude Code settings, keeping everything else and saving a backup next to it. Needs macOS 13 or later, Apple Silicon or Intel.</p>
+      <h3 class="h-sub">Or build it yourself</h3>
+      <pre class="code"><code>git clone https://github.com/FB845/clawd.git
+cd clawd
+./build.sh
+open build/Clawd.app</code></pre>
+      <p class="small">Only needs the Xcode Command Line Tools. No Xcode project, no dependencies.</p>
+    </div>
+    <div>
+      <p class="kicker">Privacy</p>
+      <h2>Stays on your Mac.</h2>
+      <ul class="privacy">
+        <li><span class="pi">✓</span><div><b>Everything is local</b>, except the weather. Clawd asks <a href="https://open-meteo.com/">Open-Meteo</a> for the forecast, and <a href="https://ipapi.co/">ipapi.co</a> to guess your city from your network address, unless you set a location yourself.</div></li>
+        <li><span class="pi">✓</span><div><b>Token counts come from Claude Code's own log files</b> on this Mac. Nothing is uploaded.</div></li>
+        <li><span class="pi">✓</span><div><b>It never reads your clipboard.</b> Copying something only makes Clawd hold up a little clipboard.</div></li>
+        <li><span class="pi">✓</span><div><b>Music is optional.</b> macOS asks once whether Clawd may check Music and Spotify. Saying no only turns off the dancing.</div></li>
+        <li><span class="pi">✓</span><div><b>No accounts, no analytics.</b> And this page has no trackers either.</div></li>
+      </ul>
+      <div class="pet-img privacy-pet"><img src="img/sleep.png" alt="Clawd asleep" width="312" height="324"></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- 8. Footer -->
+<footer class="foot">
+  <div class="wrap foot-row">
+    <div>
+      <p class="disclaimer"><b>Unofficial fan project.</b> Not made by, affiliated with, or endorsed by Anthropic. Claude, Claude Code and the Clawd character belong to Anthropic.</p>
+      <p class="small">Free and open source under the <a href="https://github.com/FB845/clawd/blob/main/LICENSE">MIT License</a>. <a href="https://github.com/FB845/clawd">Source on GitHub</a> · <a href="https://github.com/FB845/clawd/issues">Report an issue</a></p>
+    </div>
+    <div class="pet-img foot-pet"><img src="img/wave.png" alt="Clawd waving goodbye" width="312" height="324"></div>
+  </div>
+</footer>
+
+<script src="app.js" defer></script>
+</body>
+</html>

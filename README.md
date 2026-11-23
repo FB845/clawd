@@ -5,6 +5,8 @@ other windows, and doubles as a live status buddy for Claude Code. It shows what
 doing, lets you approve permission requests with a click, and puts your token usage, by project,
 in the menu bar.
 
+**See it in action: [fb845.github.io/clawd](https://fb845.github.io/clawd/)**
+
 > **Unofficial fan project.** Clawd is not made by, affiliated with, or endorsed by Anthropic.
 > Claude, Claude Code, and the Clawd character are Anthropic's; this is just a fan-made toy, free and
 > open source under the MIT License.
@@ -202,6 +204,8 @@ does nothing, so a hook can never hold up Claude Code.
   The window spans the screen's width and ignores the mouse except over Clawd, so it never blocks clicks.
 - `Sources/Particles.swift` holds the particle glyphs and the spring; `Sources/Icons.swift` the bubble icons and toys.
 - `Sources/IconRenderer.swift` renders the menu-bar icon, the .icns, and `build/preview.png`.
+- `site/` is the one-page website (plain HTML, CSS and a little JS, no build step). Pushing changes to it
+  on `main` deploys it to GitHub Pages via `.github/workflows/pages.yml`.
 
 ## Releasing
 
