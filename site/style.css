@@ -104,7 +104,7 @@ p { margin: 0 0 1em; text-wrap: pretty; }
 .top { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--bg) 85%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid color-mix(in srgb, var(--ink) 8%, transparent); }
 .top-row { display: flex; align-items: center; justify-content: space-between; height: 56px; }
 .brand { display: flex; align-items: center; gap: 10px; font: 800 1.15rem var(--rounded); color: var(--ink); text-decoration: none; }
-.brand-mark { width: 30px; height: 20px; color: var(--coral); }
+.brand-mark { width: 36px; height: 24px; color: var(--coral); }  /* 3px per unit */
 .top-nav { display: flex; gap: 22px; font-size: .95rem; }
 .top-nav a { color: var(--muted); text-decoration: none; }
 .top-nav a:hover { color: var(--ink); }
